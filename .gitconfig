@@ -1,0 +1,14 @@
+[http]
+        sslVerify = false
+[alias]
+    ls = "!f() { git log $1 --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cgreen\\\\ [%ae,%ar]\" --decorate --graph; }; f"
+    lsi = log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cgreen\\\\ [%ae,%ar]\" --decorate --graph | head -5
+    lasttag = "!f(){git describe --tags `git rev-list --tags --max-count=1`};f"
+    last-tag = !git fetch -tp && git describe --tags
+    bl = blame -c --date=short
+    switch = "!f() { git checkout $1 2>/dev/null || git checkout -b $1; }; f"
+    commits-behind = "!f() { git fetch -tp > /dev/null 2>&1; git log --oneline $(git branch --show-current)..$1; }; f"
+    branch-name = branch --show-current
+    delete-branch = "!f() { if [ \"$#\" == 0 ]; then echo \"You must specify the branch to be deleted!\"; elif [ \"$#\" == 1 ]; then echo \"git branch -D $1\"; elif [ \"$1\" == \"-a\" ]; then echo \"git branch -D $2 && git then echo \"git push origin --delete $2\"; else echo \"git branch -D $2\"; fi; }; f"
+    get-status = "!f() { if [[ \"$1\" == \"ciao\" ]]; then echo \"mi hai salutato!\"; fi; git fetch -tp; git status; echo \"$1\"; }; f"
+    wip = "!f() { git stash save $1 -u ; }; f"
