@@ -26,6 +26,8 @@ RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
 
 RUN useradd -m alessandroargentieri && echo "alessandroargentieri:alessandroargentieri" | chpasswd && adduser alessandroargentieri sudo
 
+RUN chmod 777 ./.bashrc && chmod 777 ./.gitconfig
+
 COPY ./.bashrc ./home/alessandroargentieri
 COPY ./.gitconfig ./home/alessandroargentieri
 
