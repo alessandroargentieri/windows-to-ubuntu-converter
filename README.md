@@ -1,37 +1,25 @@
 # windows-to-ubuntu-converter
 An interesting way to change your windows into ubuntu
 
-Create a **Dockerfile** in a folder and insert a **.bashrc** for linux
-Dockerfile
+1. First of all clone the project
+```bash
+git clone https://github.com/alessandroargentieri/windows-to-ubuntu-converter.git
 ```
-FROM ubuntu
 
-RUN apt-get update && \
-      apt-get -y install sudo
-RUN apt-get -y install nano
-RUN apt-get -y install tree
-RUN apt-get -y install git
-RUN apt-get -y install jq
-RUN apt-get -y install snap
+2.  Then customize the Dockerfile, the .gitignore and the .bashrc files in the cloned project.
 
-RUN useradd -m alessandroargentieri && echo "alessandroargentieri:alessandroargentieri" | chpasswd && adduser alessandroargentieri sudo
-
-COPY ./.bashrc ./home/alessandroargentieri
-
-USER alessandroargentieri
-CMD /bin/bash
-```
-Build the image:
+3. Then build the image:
 ```bash
 docker build -t myubuntu .
 ```
 
-From Windows Powershell execute (only the first time):
+4. From Windows Powershell execute (only the first time):
 ```bash
-docker run -it -d --network host --name myubuntu -v C:\Users\alessandro.argentier\projects:/home/alessandroargentieri myubuntu:latest tail -f /dev/null
+docker run -it -d --network host --privileged --name myubuntu -v C:\Users\alessandro.argentier\projects:/home/alessandroargentieri -v //var/run/docker.sock:/var/run/docker.sock myubuntu:latest tail -f /dev/null
 ```
+This will allow to share your project folder with the docker container (mounted on the user's home directory) and to share docker and docker images from inside the container, so you can use docker commands from it.
 
-Now, if you use **GitBash** terminal, you can set a **.bashrc** file in your **Windows home directory**.
+5. Now, if you use **GitBash** terminal, you can set a **.bashrc** file in your **Windows home directory**.
 In this **.bashrc** file (in my case located at C:\Users\alessandro.argentier\.bashrc) append the following lines:
 ```bash
 echo "starting your ubuntu session..."
