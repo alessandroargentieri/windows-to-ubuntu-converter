@@ -11,6 +11,8 @@ RUN apt-get update && \
     apt-get -y install snap && \
     apt-get -y install curl && \
     apt-get -y install wget && \
+    apt-get -y install locate && \
+    apt-get -y install unzip && \
     apt-get -y install maven && \
     curl https://dl.google.com/go/go1.17.3.linux-amd64.tar.gz --output go1.17.3.linux-amd64.tar.gz && \
         rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz && \
