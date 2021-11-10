@@ -32,17 +32,18 @@ RUN useradd -m -d /home/alessandroargentieri alessandroargentieri && \
     adduser alessandroargentieri sudo && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+# get .bashrc and .gitconfig for the user
+COPY ./.bashrc ./home/alessandroargentieri
+COPY ./.gitconfig ./home/alessandroargentieri
+RUN chmod 777 ./home/alessandroargentieri/.bashrc && \
+    chmod 777 ./home/alessandroargentieri/.gitconfig && \
+    sed -i 's/\r$//' ./home/alessandroargentieri/.bashrc && \
+    sed -i 's/\r$//' ./home/alessandroargentieri/.gitconfig    
+
 # switch to user
 USER alessandroargentieri
 # use user's home directory
 WORKDIR /home/alessandroargentieri
-# get .bashrc and .gitconfig
-COPY ./.bashrc .
-COPY ./.gitconfig .
-RUN sudo chmod 777 .bashrc && \
-    sudo chmod 777 .gitconfig && \
-    sed -i 's/\r$//' .bashrc && \
-    sed -i 's/\r$//' .gitconfig
 
 # install docker
 RUN sudo curl -s https://get.docker.com | bash && \
