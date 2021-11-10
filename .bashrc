@@ -128,11 +128,14 @@ export PS1="\[\033[32m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\] $ ";
 # add golang path to PATH env var
 export PATH=$PATH:/usr/local/go/bin
 
+alias docker='sudo docker'
 alias docker-ip='sudo docker inspect --format="{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}"'
 alias docker-ids='docker ps -q' # docker ps | cut -d " " -f 1
 alias docker-ps='docker ps --format "{{.ID}} --- {{.Names}}"'
 alias docker-stop-all='docker stop $(docker ps -q) 2>/dev/null || echo "No containers running"'
 
+alias k3d='sudo k3d'
+alias kubectl='sudo kubectl'
 
 # shorten the terminal location line to just the current line
 # for that specific terminal process

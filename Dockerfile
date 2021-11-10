@@ -13,29 +13,51 @@ RUN apt-get update && \
     apt-get -y install wget && \
     apt-get -y install locate && \
     apt-get -y install unzip && \
-    apt-get -y install lynx && \
     apt-get -y install maven && \
     curl https://dl.google.com/go/go1.17.3.linux-amd64.tar.gz --output go1.17.3.linux-amd64.tar.gz && \
         rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz && \
         rm -rf go1.17.3.linux-amd64.tar.gz
         # export PATH=$PATH:/usr/local/go/bin ALREADY EXPORTED IN MY .bashrc
 
+# install kubectl
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl
 
-RUN curl -s https://get.docker.com | bash
-RUN curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+ENV user alessandroargentieri
 
-RUN useradd -m alessandroargentieri && echo "alessandroargentieri:alessandroargentieri" | chpasswd && adduser alessandroargentieri sudo
+# add user
+RUN useradd -m -d /home/alessandroargentieri alessandroargentieri && \
+    chown -R alessandroargentieri /home/alessandroargentieri && \
+    adduser alessandroargentieri sudo && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-COPY ./.bashrc ./home/alessandroargentieri
-COPY ./.gitconfig ./home/alessandroargentieri
-
-RUN chmod 777 ./home/alessandroargentieri/.bashrc && \
-    chmod 777 ./home/alessandroargentieri/.gitconfig && \
-    sed -i 's/\r$//' ./home/alessandroargentieri/.bashrc && \
-    sed -i 's/\r$//' ./home/alessandroargentieri/.gitconfig
-
+# switch to user
 USER alessandroargentieri
+# use user's home directory
+WORKDIR /home/alessandroargentieri
+# get .bashrc and .gitconfig
+COPY ./.bashrc .
+COPY ./.gitconfig .
+RUN sudo chmod 777 .bashrc && \
+    sudo chmod 777 .gitconfig && \
+    sed -i 's/\r$//' .bashrc && \
+    sed -i 's/\r$//' .gitconfig
+
+# install docker
+RUN sudo curl -s https://get.docker.com | bash && \
+    sudo usermod -aG docker alessandroargentieri
+
+# install k3d
+RUN sudo curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+
+# install helm 3
+RUN sudo curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# install aws cli
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    sudo ./aws/install && \
+    rm -rf aws  awscliv2.zip
+
 CMD /bin/bash
